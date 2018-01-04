@@ -28,6 +28,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define PRODUCT         Sistan Keyboard
 #define DESCRIPTION     A head of Sistan''s keyboard.
 
+// Enable a RESET key for writing firmware
+#define CATERINA_BOOTLOADER
+
 /* key matrix size */
 #define MATRIX_ROWS 2
 #define MATRIX_COLS 3

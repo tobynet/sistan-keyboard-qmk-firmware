@@ -15,30 +15,22 @@
  */
 #include "sistan.h"
 
+// SEND_STRING with delay
+#define SEND_STRING_DELAY(str, interval) send_string_with_delay_P(PSTR(str), interval)
+
+// Define custom keycods for special keys
+enum custom_keycodes {
+   MACRO_PLUS_X = SAFE_RANGE,
+   MACRO_SISTAN,
+   MACRO_X_TODAY,
+   MACRO_DEL_ALL,
+};
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [0] = KEYMAP( /* Base */
-  KC_A,    KC_1,    KC_H, \
-  KC_TAB,  KC_SPC,  KC_ENTER \
+  MACRO_DEL_ALL,    KC_BSPACE,      RESET, \
+  MACRO_PLUS_X,     MACRO_SISTAN,   MACRO_X_TODAY \
 ),
-};
-
-const uint16_t PROGMEM fn_actions[] = {
-
-};
-
-const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
-{
-  // MACRODOWN only works in this function
-      switch(id) {
-        case 0:
-          if (record->event.pressed) {
-            register_code(KC_RSFT);
-          } else {
-            unregister_code(KC_RSFT);
-          }
-        break;
-      }
-    return MACRO_NONE;
 };
 
 
@@ -51,6 +43,75 @@ void matrix_scan_user(void) {
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  switch (keycode) {
+    case MACRO_PLUS_X:
+      if (record->event.pressed) {
+        // Input "あなたと"
+        // X_GRAVE is an alternative code of X_ZKHK(Zenkaku/Hankaku)
+        SEND_STRING (SS_TAP(X_GRAVE)
+          "anatato" SS_TAP(X_F6)
+          SS_TAP(X_ENTER) SS_TAP(X_GRAVE));
+      }
+      return false;
+      break;
+
+
+    case MACRO_SISTAN:
+      if (record->event.pressed) {
+        // Input "ジスたん、"
+        // X_GRAVE is an alternative code of X_ZKHK(Zenkaku/Hankaku)
+        SEND_STRING (SS_TAP(X_GRAVE)
+          "jisu" SS_TAP(X_F7)
+          "tan," SS_TAP(X_F6)
+          SS_TAP(X_ENTER) SS_TAP(X_GRAVE)
+          SS_TAP(X_ENTER)
+        );
+      }
+      return false;
+      break;
+
+
+    case MACRO_X_TODAY:
+      if (record->event.pressed) {
+        // Input "今すぐダ"
+        // X_GRAVE is an alternative code of X_ZKHK(Zenkaku/Hankaku)
+        SEND_STRING (SS_TAP(X_GRAVE)
+          "imasugu "
+          "dau" SS_TAP(X_F7)
+          SS_TAP(X_ENTER) SS_TAP(X_GRAVE));
+
+        wait_ms(2400);
+
+        // Erase strings...
+        SEND_STRING_DELAY (SS_TAP(X_BSPACE) SS_TAP(X_BSPACE), 200);
+
+        wait_ms(800);
+
+        // Input "アッパー"
+        // X_GRAVE is an alternative code of X_ZKHK(Zenkaku/Hankaku)
+        SEND_STRING_DELAY (SS_TAP(X_GRAVE)
+          "appa-" SS_TAP(X_F7)
+          SS_TAP(X_ENTER) SS_TAP(X_GRAVE)
+          SS_TAP(X_ENTER),
+          160);
+      }
+      return false;
+      break;
+
+    case MACRO_DEL_ALL:
+      if (record->event.pressed) {
+        // Select All
+        SEND_STRING (SS_LCTRL("a"));
+
+        wait_ms(1000);
+
+        // Delete
+        SEND_STRING (SS_TAP(X_DELETE));
+      }
+      return false;
+      break;
+  }
+
   return true;
 }
 
