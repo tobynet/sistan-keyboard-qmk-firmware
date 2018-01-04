@@ -1,4 +1,4 @@
-/* Copyright 2017 REPLACE_WITH_YOUR_NAME
+/* Copyright 2018 tobynet
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,8 +17,8 @@
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [0] = KEYMAP( /* Base */
-  KC_A,  KC_1,  KC_H, \
-    KC_TAB,  KC_SPC   \
+  KC_A,    KC_1,    KC_H, \
+  KC_TAB,  KC_SPC,  KC_ENTER \
 ),
 };
 

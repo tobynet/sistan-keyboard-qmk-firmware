@@ -1,4 +1,4 @@
-/* Copyright 2017 REPLACE_WITH_YOUR_NAME
+/* Copyright 2018 tobynet
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,11 +24,11 @@
 // The second converts the arguments into a two-dimensional array
 #define KEYMAP( \
     k00, k01, k02, \
-      k10,  k11   \
+    k10, k11, k12  \
 ) \
 { \
-    { k00, k01,   k02 }, \
-    { k10, KC_NO, k11 }, \
+    { k00, k01, k02 }, \
+    { k10, k11, k12 }, \
 }
 
 #endif

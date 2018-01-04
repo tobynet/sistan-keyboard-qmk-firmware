@@ -4,9 +4,9 @@
 
 A short description of the keyboard/project
 
-Keyboard Maintainer: [You](https://github.com/yourusername)  
-Hardware Supported: The PCBs, controllers supported  
-Hardware Availability: links to where you can find this hardware
+* Keyboard Maintainer: [tobynet](https://github.com/tobynet)  
+* Hardware Supported: TODO: The PCBs, controllers supported  
+* Hardware Availability: TODO: links to where you can find this hardware
 
 Make example for this keyboard (after setting up your build environment):
 
