@@ -14,6 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "sistan.h"
+#include "mousekey.h"
 
 // SEND_STRING with delay
 #define SEND_STRING_DELAY(str, interval) send_string_with_delay_P(PSTR(str), interval)
@@ -28,7 +29,7 @@ enum custom_keycodes {
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [0] = KEYMAP( /* Base */
-  MACRO_DEL_ALL,    KC_BSPACE,      RESET, \
+  MACRO_DEL_ALL,    KC_MS_BTN1,     RESET, \
   MACRO_PLUS_X,     MACRO_SISTAN,   MACRO_X_TODAY \
 ),
 };
@@ -41,6 +42,28 @@ void matrix_init_user(void) {
 void matrix_scan_user(void) {
 
 }
+
+
+// Emulate mouse click
+static void send_mouse_click(void) {
+  mousekey_on(KC_MS_BTN1);
+  mousekey_send();
+  wait_ms(100);
+
+  mousekey_off(KC_MS_BTN1);
+  mousekey_send();
+  wait_ms(100);
+}
+
+// Emulate mouse move
+// ...mousekey is not suitable for this application
+static void send_mouse_move(int8_t delta_x, int8_t delta_y) {
+  report_mouse_t m = {};
+  m.x = delta_x;
+  m.y = delta_y;
+  host_mouse_send(&m);
+}
+
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
@@ -98,14 +121,34 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       return false;
       break;
 
+
     case MACRO_DEL_ALL:
       if (record->event.pressed) {
-        // Select All
+        const int delta_x = 20;
+        const int short_wait = 100;
+
+        // Test for mouse motion
+        send_mouse_move(delta_x, delta_x);
+
+        // Select all text (for VSCode)
+        send_mouse_click();
+        send_mouse_click();
+        send_mouse_click();
+        send_mouse_click();
+
+        wait_ms(short_wait);
+
+        // Test for mouse motion
+        send_mouse_move(-delta_x, 0);
+        wait_ms(short_wait);
+        send_mouse_move(0, -delta_x);
+
+        // Select all text (insurance for notepad.exe)
         SEND_STRING (SS_LCTRL("a"));
 
-        wait_ms(1000);
+        wait_ms(short_wait);
 
-        // Delete
+        // Delete text
         SEND_STRING (SS_TAP(X_DELETE));
       }
       return false;
@@ -118,3 +161,4 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 void led_set_user(uint8_t usb_led) {
 
 }
+
