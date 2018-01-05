@@ -21,18 +21,37 @@
 
 // Define custom keycods for special keys
 enum custom_keycodes {
+  // Joy Buttons
    MACRO_PLUS_X = SAFE_RANGE,
    MACRO_SISTAN,
    MACRO_X_TODAY,
    MACRO_DEL_ALL,
+
+  // For playing tobe-kiritan http://studioyamaya.com/tobe-kiritan/
+  MACRO_LEFT_JUMP,
+  MACRO_RIGHT_JUMP,
+  MACRO_RESTART_STAGE,    // Only in stage
+  MACRO_NEXT_STAGE,       // Only in stage
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [0] = KEYMAP( /* Base */
-  MACRO_DEL_ALL,    KC_MS_BTN1,     RESET, \
-  MACRO_PLUS_X,     MACRO_SISTAN,   MACRO_X_TODAY \
+  KC_MS_BTN1,           MACRO_NEXT_STAGE,     RESET, \
+  MACRO_LEFT_JUMP,      MACRO_RESTART_STAGE,  MACRO_RIGHT_JUMP \
 ),
 };
+
+
+// For playing tobe-kiritan
+// TODO: defineize
+const int right_jump_delta_x = 30;
+const int right_jump_delta_y = 0;
+#define left_jump_delta_x (-right_jump_delta_x)
+#define left_jump_delta_y 0
+const int restart_stage_delta_x = -45;
+const int restart_stage_delta_y = 0;
+const int next_stage_delta_x = 45;
+const int next_stage_delta_y = 0;
 
 
 void matrix_init_user(void) {
@@ -43,6 +62,24 @@ void matrix_scan_user(void) {
 
 }
 
+// // Dynamic wait_ms for AVR
+// static void wait_ms_(uint32_t wait) {
+//   while (0 < wait) {
+//     wait_ms(1);
+//     --wait;
+//   }
+// }
+
+// // Emulate mouse click
+// static void send_mouse_click_with_wait(uint32_t wait) {
+//   mousekey_on(KC_MS_BTN1);
+//   mousekey_send();
+//   wait_ms_(wait);
+
+//   mousekey_off(KC_MS_BTN1);
+//   mousekey_send();
+//   wait_ms_(wait);
+// }
 
 // Emulate mouse click
 static void send_mouse_click(void) {
@@ -54,6 +91,19 @@ static void send_mouse_click(void) {
   mousekey_send();
   wait_ms(100);
 }
+
+// Emulate mouse down
+static void send_mouse_down(uint8_t code) {
+  mousekey_on(code);
+  mousekey_send();
+}
+
+// Emulate mouse up
+static void send_mouse_up(uint8_t code) {
+  mousekey_off(code);
+  mousekey_send();
+}
+
 
 // Emulate mouse move
 // ...mousekey is not suitable for this application
@@ -67,6 +117,9 @@ static void send_mouse_move(int8_t delta_x, int8_t delta_y) {
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
+    // TODO: Refactor this function into smaller.
+
+    // Joy buttons... -------------------------------------------
     case MACRO_PLUS_X:
       if (record->event.pressed) {
         // Input "あなたと"
@@ -122,6 +175,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       break;
 
 
+    // WARNING: This macro is experimental.
     case MACRO_DEL_ALL:
       if (record->event.pressed) {
         const int delta_x = 20;
@@ -150,6 +204,53 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         // Delete text
         SEND_STRING (SS_TAP(X_DELETE));
+      }
+      return false;
+      break;
+
+
+    // For playing tobe-kiritan ---------------------------------
+    case MACRO_LEFT_JUMP:
+      if (record->event.pressed) {
+        send_mouse_move(left_jump_delta_x, left_jump_delta_y);
+        send_mouse_down(KC_MS_BTN1);
+      } else {
+        send_mouse_up(KC_MS_BTN1);
+        send_mouse_move(-left_jump_delta_x, -left_jump_delta_y);
+      }
+      return false;
+      break;
+
+    case MACRO_RIGHT_JUMP:
+      if (record->event.pressed) {
+        send_mouse_move(right_jump_delta_x, right_jump_delta_y);
+        send_mouse_down(KC_MS_BTN1);
+      } else {
+        send_mouse_up(KC_MS_BTN1);
+        send_mouse_move(-right_jump_delta_x, -right_jump_delta_y);
+      }
+      return false;
+      break;
+
+    case MACRO_RESTART_STAGE:
+      if (record->event.pressed) {
+        // For center buttton
+        send_mouse_click();
+
+        // For left restart button
+        send_mouse_move(restart_stage_delta_x, restart_stage_delta_y);
+        send_mouse_click();
+        send_mouse_move(-restart_stage_delta_x, -restart_stage_delta_y);
+      }
+      return false;
+      break;
+
+    case MACRO_NEXT_STAGE:
+      // For right next button
+      if (record->event.pressed) {
+        send_mouse_move(next_stage_delta_x, next_stage_delta_y);
+        send_mouse_click();
+        send_mouse_move(-next_stage_delta_x, -next_stage_delta_y);
       }
       return false;
       break;
