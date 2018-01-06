@@ -1,12 +1,15 @@
-# sistan
+# sistan keyboard
 
-![sistan](imgur.com image replace me!)
+![sistan](https://i.imgur.com/IOOaqGG.jpg)
+
+* Photos and production process: <https://imgur.com/a/6UgHd>
 
 A short description of the keyboard/project
 
 * Keyboard Maintainer: [tobynet](https://github.com/tobynet)  
-* Hardware Supported: TODO: The PCBs, controllers supported  
-* Hardware Availability: TODO: links to where you can find this hardware
+* Hardware Supported and Availability: Create your own self!
+  * 3D modle for printing: http://a360.co/2qxyLTT
+  * TODO: etc...
 
 Make example for this keyboard (after setting up your build environment):
 
