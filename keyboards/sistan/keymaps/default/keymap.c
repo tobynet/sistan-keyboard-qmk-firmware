@@ -13,8 +13,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "sistan.h"
-#include "mousekey.h"
+#include "../../sistan.h"
+#include "../../mouse.h"
+
 
 // SEND_STRING with delay
 #define SEND_STRING_DELAY(str, interval) send_string_with_delay_P(PSTR(str), interval)
@@ -36,7 +37,7 @@ enum custom_keycodes {
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [0] = KEYMAP( /* Base */
-  KC_MS_BTN1,           MACRO_NEXT_STAGE,     RESET, \
+  KC_MS_BTN1,           KC_MS_BTN2,     RESET, \
   MACRO_LEFT_JUMP,      MACRO_RESTART_STAGE,  MACRO_RIGHT_JUMP \
 ),
 };
@@ -61,59 +62,6 @@ void matrix_init_user(void) {
 void matrix_scan_user(void) {
 
 }
-
-// // Dynamic wait_ms for AVR
-// static void wait_ms_(uint32_t wait) {
-//   while (0 < wait) {
-//     wait_ms(1);
-//     --wait;
-//   }
-// }
-
-// // Emulate mouse click
-// static void send_mouse_click_with_wait(uint32_t wait) {
-//   mousekey_on(KC_MS_BTN1);
-//   mousekey_send();
-//   wait_ms_(wait);
-
-//   mousekey_off(KC_MS_BTN1);
-//   mousekey_send();
-//   wait_ms_(wait);
-// }
-
-// Emulate mouse click
-static void send_mouse_click(void) {
-  mousekey_on(KC_MS_BTN1);
-  mousekey_send();
-  wait_ms(100);
-
-  mousekey_off(KC_MS_BTN1);
-  mousekey_send();
-  wait_ms(100);
-}
-
-// Emulate mouse down
-static void send_mouse_down(uint8_t code) {
-  mousekey_on(code);
-  mousekey_send();
-}
-
-// Emulate mouse up
-static void send_mouse_up(uint8_t code) {
-  mousekey_off(code);
-  mousekey_send();
-}
-
-
-// Emulate mouse move
-// ...mousekey is not suitable for this application
-static void send_mouse_move(int8_t delta_x, int8_t delta_y) {
-  report_mouse_t m = {};
-  m.x = delta_x;
-  m.y = delta_y;
-  host_mouse_send(&m);
-}
-
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {

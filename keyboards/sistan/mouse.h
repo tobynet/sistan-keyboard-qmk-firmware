@@ -14,13 +14,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CONFIG_USER_H
-#define CONFIG_USER_H
+#ifndef MY_MOUSE_H
+#define MY_MOUSE_H
 
-#include "config_common.h"
-
-// place overrides here
-
-#define ANALOG_STICK_POLLING_INTERVAL 100
+void send_mouse_click_with_wait(uint32_t wait);
+void send_mouse_click(void);
+void send_mouse_down(uint8_t code);
+void send_mouse_up(uint8_t code);
+void send_mouse_move(int8_t delta_x, int8_t delta_y);
 
 #endif

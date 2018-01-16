@@ -21,6 +21,7 @@
 #include <stdint.h>
 #include "analog.h"
 
+#include "print.h"
 
 static uint8_t aref = (1<<REFS0); // default to AREF = Vcc
 
@@ -38,9 +39,13 @@ int16_t analogRead(uint8_t pin)
 	static const uint8_t PROGMEM pin_to_mux[] = {
 		0x00, 0x01, 0x04, 0x05, 0x06, 0x07,
 		0x25, 0x24, 0x23, 0x22, 0x21, 0x20};
+  uint8_t mux = pgm_read_byte(pin_to_mux + pin);
+  print("# ATmega32U4 pin "); print_dec(pin); print(": "); print_val_dec(mux);
 	if (pin >= 12) return 0;
-	return adc_read(pgm_read_byte(pin_to_mux + pin));
+//	return adc_read(pgm_read_byte(pin_to_mux + pin));
+	return adc_read(mux);
 #elif defined(__AVR_AT90USB646__) || defined(__AVR_AT90USB1286__)
+  print("# etc AVR"); print_val_dec(pin);
 	if (pin >= 8) return 0;
 	return adc_read(pin);
 #else
